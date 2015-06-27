@@ -1,6 +1,11 @@
-char goToCmd = 'G';
-char readCmd = 'R';
-char scanCmd = 'S';
+const char goToCmd = 'G';
+const char readCmd = 'R';
+const char scanCmd = 'S';
+
+const int dataPin = A0;
+
+int xPosition = 0;
+int yPosition = 0;
 
 void setup()
 {
@@ -13,7 +18,7 @@ void setup()
 void loop()
 {
   byte cmd[10];
-  
+
   clearCmd(cmd);
 
   getCmd(cmd);
@@ -78,26 +83,61 @@ void clearCmd(byte cmd[10])
 }
 
 void goTo(byte cmd[10])
-{
+{  
   Serial.println("Going to...");
-
-  char buffer[3];
 
   char axis = char(cmd[1]);
 
+  // Get the number of degrees (up to 3 digits)
+  char buffer[3];
   buffer[0] = cmd[2];
   buffer[1] = cmd[3];
   buffer[2] = cmd[4];
-  int xVal = atoi(buffer);
+  int degrees = atoi(buffer);
+
+  if (axis == 'X')
+    xPosition = degrees;
+  else if (axis == 'Y')
+    yPosition = degrees;
 
   Serial.print("Axis:");
   Serial.println(axis);
   Serial.print("Degrees:");
-  Serial.println(xVal);
+  Serial.println(degrees);
 }
 
 void readValue(byte cmd[10])
 {
-   Serial.println("Reading value...");
+  Serial.println("Reading value...");
+
+  int numberOfReadings = 1;
+
+  if (cmd[1] != '\n')
+  {
+    char buffer[3];
+    buffer[0] = cmd[1];
+    buffer[1] = cmd[2];
+    buffer[2] = cmd[3];
+    numberOfReadings = atoi(buffer);
+  }
+
+  Serial.print("Number of readings:");
+  Serial.println(numberOfReadings);
+
+  for (int i = 0; i < numberOfReadings; i++)
+  {
+    int reading = analogRead(dataPin);
+
+    // Start the line with "D;" to indicate the rest of the line is data
+    Serial.print("D:");
+    Serial.print(reading);
+    Serial.print(";X:");
+    Serial.print(xPosition);
+    Serial.print(";Y:");
+    Serial.print(yPosition);
+    Serial.println(";");
+  }
 }
+
+
 
