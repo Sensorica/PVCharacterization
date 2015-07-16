@@ -5,6 +5,6 @@ The aim of the project is to design and create a tool for optical characterizati
 ## Setup
 The repository contains 3 main components:
 
-* The Arduino firmware that is in charge of controlling the electro-mechanical system (found under `firmware`)
-* The cross-platform driver allowing a computer to communicate with the firmware living in the Arduino (found under `driver`)
-* The GUI of the laptop application (found under `GUI`)
+* The **Arduino firmware** that is in charge of controlling the electro-mechanical system (found under `firmware`)
+* The cross-platform **driver** allowing a computer to communicate with the firmware living in the Arduino (found under `driver`)
+* The **GUI** of the laptop application (found under `GUI`)
