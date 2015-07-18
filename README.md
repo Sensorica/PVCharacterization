@@ -7,7 +7,7 @@ The aim of the project is to design and create a tool for optical characterizati
 TODO
 
 ### Client
-* Python >=3.4
+* Python 3.*
 * PySerial
 
 Using `pip` you can install all the requirements with
