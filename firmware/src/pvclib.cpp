@@ -1,15 +1,6 @@
 #include "Arduino.h"
 #include "pvclib.h"
 
-#if HWTYPE == PVCSERVO
- #include <Servo.h>
- #include "pvcservo.h"
-#endif
-
-#if HWTYPE == PVCSTEPPER
-// TODO: Add stepper includes
-#endif
-
 int xPosition = 0;
 int yPosition = 0;
 
