@@ -11,14 +11,8 @@ const char CMD_SCAN = 'S';
 const int DATA_PIN = A0;
 
 void pvcSetup()
-{
-  #if HWTYPE == PVCSERVO
-   pvcServoSetup();
-  #endif
-  
-  #if HWTYPE == PVCSTEPPER
-  // TODO: Add stepper setup
-  #endif
+{ 
+  //TODO
 }
 
 /*
