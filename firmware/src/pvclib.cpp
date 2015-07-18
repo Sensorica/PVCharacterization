@@ -133,7 +133,7 @@ void goTo(byte cmd[10])
   Serial.print("Degrees:");
   Serial.println(degrees);
   
-  gimbalGo(xPosition, yPosition);
+  //gimbalGo(xPosition, yPosition);
 }
 
 void readValue(byte cmd[10])
