@@ -13,11 +13,11 @@
 int xPosition = 0;
 int yPosition = 0;
 
-const char goToCmd = 'G';
-const char readCmd = 'R';
-const char scanCmd = 'S';
+const char CMD_GOTO = 'G';
+const char CMD_READ = 'R';
+const char CMD_SCAN = 'S';
 
-const int dataPin = A0;
+const int DATA_PIN = A0;
 
 void pvcSetup()
 {
@@ -30,6 +30,13 @@ void pvcSetup()
   #endif
 }
 
+/*
+ * The main loop of the firmware. On each iteration, the loop takes the following steps:
+ *     * Clear the command cache
+ *     * Get the next command to be executed from the serial port
+ *     * Print out the command that has been parsed
+ *     * Run the command
+ */
 void pvcLoop()
 {
   byte cmd[10];
@@ -44,6 +51,23 @@ void pvcLoop()
 }
 
 
+/*
+ * Cleans up the command variable.
+ */
+void clearCmd(byte cmd[10])
+{
+  for (int i = 0; i < 10; i++)
+  {
+    cmd[i] = '\n';
+  }
+}
+
+
+/*
+ * Assumes `cmd` has been previously cleaned by `clearCmd`.
+ * This function fetches data from the serial port and loads a new
+ * command in `cmd` to be executed by the Arduino.
+ */
 void getCmd(byte cmd[10])
 {
   int x = 0;
@@ -54,17 +78,40 @@ void getCmd(byte cmd[10])
   }
 }
 
+
+/*
+ * Prints out the command to be executed to the serial monitor.
+ */
+void printCmd(byte cmd[10])
+{
+  if (cmd[0] != '\n')
+  {
+    Serial.print("Command to be executed: ");
+    for (int i = 0; i < 10; i++)
+    {
+      if (cmd[i] != '\n')
+        Serial.print(char(cmd[i]));
+    }
+    Serial.println();
+  }
+}
+
+
+/*
+ * Parses the command to be executed (10 bytes long) and run the appropriate
+ * low-level function.
+ */
 void runCmd(byte cmd[10])
 {
   if (cmd[0] != '\n')
   {
     char letter = cmd[0];
 
-    if (letter == goToCmd)
+    if (letter == CMD_GOTO)
     {
       goTo(cmd);
     }  
-    else if (letter == readCmd)
+    else if (letter == CMD_READ)
     {
       readValue(cmd);
     }
@@ -75,27 +122,7 @@ void runCmd(byte cmd[10])
   }
 }
 
-void printCmd(byte cmd[10])
-{
-  if (cmd[0] != '\n')
-  {
-    Serial.print("Cmd:");
-    for (int i = 0; i < 10; i++)
-    {
-      if (cmd[i] != '\n')
-        Serial.print(char(cmd[i]));
-    }
-    Serial.println();
-  }
-}
 
-void clearCmd(byte cmd[10])
-{
-  for (int i = 0; i < 10; i++)
-  {
-    cmd[i] = '\n';
-  }
-}
 
 void goTo(byte cmd[10])
 {  
@@ -144,7 +171,7 @@ void readValue(byte cmd[10])
 
   for (int i = 0; i < numberOfReadings; i++)
   {
-    int reading = analogRead(dataPin);
+    int reading = analogRead(DATA_PIN);
 
     // Start the line with "D;" to indicate the rest of the line is data
     Serial.print("D:");

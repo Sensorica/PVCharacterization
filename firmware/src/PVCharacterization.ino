@@ -1,3 +1,11 @@
+/*
+ * PVCharacterization.ino
+ * ----------------------
+ *
+ * This is the top level Arduino sketch. It calls the control libraries and all the
+ * components developed for the device firmware.
+ */
+
 #include "Arduino.h"
 
 #define PVCSERVO 1
