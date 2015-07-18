@@ -19,7 +19,7 @@ class PVDriver:
     loaded with our firmware.
     """
 
-    def __init__(self, port='/dev/ttyUSB0', baud_rate=9600, *args, **kwargs):
+    def __init__(self, port='/dev/ttyACM0', baud_rate=9600, *args, **kwargs):
         print("Hello world")
         self._arduino = serial.Serial(port, baud_rate, timeout=1)
 
@@ -78,8 +78,9 @@ class PVDriver:
         """
         pass
 
-
 if __name__ == '__main__':
     print("Starting tests...")
     driver = PVDriver()
+    driver.set_position(tilt=42.5)
+    driver._arduino.write(bytearray("Sensorica", 'ascii'))
     print("Done.")
