@@ -29,6 +29,9 @@ class PVDriver:
         print("Hello world")
         self._arduino = serial.Serial(port, baud_rate, timeout=1)
 
+    def close_connexion(self):
+        self._arduino.close()
+
     def get_position(self, unit='degree'):
         """
         Retrieve the current absolute tilt and rotation angles of the device.
@@ -131,4 +134,5 @@ if __name__ == '__main__':
     driver = PVDriver()
     driver.set_position(rot=2.8)
     print("RESPONSE: " + str(driver._arduino.readline()))
+    driver.close_connexion()
     print("Done.")
