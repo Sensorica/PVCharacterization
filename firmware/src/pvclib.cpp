@@ -26,7 +26,7 @@ void pvcSetup()
  */
 void pvcLoop()
 {
-  byte cmd[CMD_MAX_LENGTH];
+  char cmd[CMD_MAX_LENGTH];
   
   clearCmd(cmd);
 
@@ -41,7 +41,7 @@ void pvcLoop()
 /*
  * Cleans up the command variable.
  */
-void clearCmd(byte cmd[CMD_MAX_LENGTH])
+void clearCmd(char cmd[CMD_MAX_LENGTH])
 {
   for (int i = 0; i < CMD_MAX_LENGTH; i++)
   {
@@ -55,7 +55,7 @@ void clearCmd(byte cmd[CMD_MAX_LENGTH])
  * This function fetches data from the serial port and loads a new
  * command in `cmd` to be executed by the Arduino.
  */
-void getCmd(byte cmd[CMD_MAX_LENGTH])
+void getCmd(char cmd[CMD_MAX_LENGTH])
 {
   int x = 0;
   while (Serial.available() > 0) {
@@ -63,6 +63,7 @@ void getCmd(byte cmd[CMD_MAX_LENGTH])
     if (char(cmd[x]) == ';') {
       // We have reached the end of the command and previous calls
       // to Serial.read() have removed the command from the serial buffer.
+      cmd[x] = '\0';
       break;
     }
     x++;
@@ -74,7 +75,7 @@ void getCmd(byte cmd[CMD_MAX_LENGTH])
 /*
  * Prints out the command to be executed to the serial monitor.
  */
-void printCmd(byte cmd[CMD_MAX_LENGTH])
+void printCmd(char cmd[CMD_MAX_LENGTH])
 {
   if (cmd[0] != '\n')
   {
@@ -90,11 +91,39 @@ void printCmd(byte cmd[CMD_MAX_LENGTH])
 
 
 /*
- * Parses the command to be executed (CMD_MAX_LENGTH bytes long) and run the appropriate
+ * Parses the command to be executed (CMD_MAX_LENGTH char long) and run the appropriate
  * low-level function.
  */
-void runCmd(byte cmd[CMD_MAX_LENGTH])
+void runCmd(char cmd[CMD_MAX_LENGTH])
 {
+  char operand[CMD_MAX_LENGTH];
+  if (cmd[0] != '\n')
+  {
+    for (int i=0; i<CMD_MAX_LENGTH; i++)
+    {
+      if (char(cmd[i]) != ',' && cmd[i] != '\n') {
+        operand[i] = cmd[i];
+      }
+      else {
+        operand[i] = '\0';
+        break;
+      }
+    }
+
+    Serial.print("OPERAND: ");
+    Serial.print(operand);
+    Serial.println();
+
+    if (operand == "RS")
+    {
+      // Return the current state
+      Serial.println("STATE:1");
+    }
+    else {
+      Serial.println("Operand not equal to RS");
+    }
+  }
+
   // if (cmd[0] != '\n')
   // {
   //   char letter = cmd[0];
@@ -115,8 +144,7 @@ void runCmd(byte cmd[CMD_MAX_LENGTH])
 }
 
 
-
-void goTo(byte cmd[CMD_MAX_LENGTH])
+void goTo(char cmd[CMD_MAX_LENGTH])
 {  
 
   Serial.println("Going to...");
@@ -143,7 +171,7 @@ void goTo(byte cmd[CMD_MAX_LENGTH])
   //gimbalGo(xPosition, yPosition);
 }
 
-void readValue(byte cmd[CMD_MAX_LENGTH])
+void readValue(char cmd[CMD_MAX_LENGTH])
 {
   Serial.println("Reading value...");
 
