@@ -10,6 +10,7 @@ to the slave device over the serial port.
 """
 
 import serial
+import time
 
 
 class PVDriver:
@@ -18,6 +19,11 @@ class PVDriver:
     A class used to represent the bridge between a computer and an Arduino
     loaded with our firmware.
     """
+
+    # State constants are defined in a static way
+    IDLE = 0
+    MOVING = 1
+    ERROR = -1
 
     def __init__(self, port='/dev/ttyACM0', baud_rate=9600, *args, **kwargs):
         print("Hello world")
@@ -54,17 +60,59 @@ class PVDriver:
         Calling `set_position` without any argument is useless as it won't
         have any impact on the current setpoint.
         """
-        print("Set position to ({}, {})".format(tilt, rot))
+        if tilt and rot:
+            # We need to call goToTilt and goToRot subsequently
+            print("Both a tilt and rotation angles have been provided.")
+            if relative:
+                cmd_tilt = "GTR," + str(tilt)
+                cmd_rot = "GRR," + str(rot)
+            else:
+                cmd_tilt = "GT," + str(tilt)
+                cmd_rot = "GR," + str(rot)
+            self._send_command(cmd_tilt)
+            self._send_command(cmd_rot)
+
+        elif tilt:
+            print("Only a tilt angle was provided.")
+            if relative:
+                cmd = "GTR," + str(tilt)
+            else:
+                cmd = "GT," + str(tilt)
+            self._send_command(cmd)
+
+        elif rot:
+            print("Only a rotation angle was provided")
+            if relative:
+                cmd = "GRR," + str(rot)
+            else:
+                cmd = "GR," + str(rot)
+            self._send_command(cmd)
+
+        else:
+            print("You did not provide any angle. Nothing to do here.")
+            pass
+
+    def _send_command(self, cmd):
+        """
+        Takes a string command in parameter and sends it to the Arduino.
+        """
+        # First make sure the device is IDLE
+        state = self._get_state()
+        while state != PVDriver.IDLE:
+            # Wait for 500ms before checking the current state
+            time.sleep(0.5)
+            state = self._get_state()
+        self._arduino.write(bytearray(cmd, 'ascii'))
 
     def _get_state(self):
         """
         Retrieve the current state of the device. The returned value can be one
         amongst the following list:
-            * IDLE
-            * MOVING
-            * ERROR
+            * 0  = IDLE
+            * 1  = MOVING
+            * -1 = ERROR
         """
-        pass
+        return PVDriver.IDLE
 
     def _get_controller_parameters(self):
         """
@@ -81,9 +129,6 @@ class PVDriver:
 if __name__ == '__main__':
     print("Starting tests...")
     driver = PVDriver()
-    driver.set_position(tilt=42.5)
-    msg = "Sensorica"
-    print("MESSAGE SENT: " + msg)
-    driver._arduino.write(bytearray(msg, 'ascii'))
+    driver.set_position(rot=2.8)
     print("RESPONSE: " + str(driver._arduino.readline()))
     print("Done.")
