@@ -1,6 +1,8 @@
 #include "Arduino.h"
 #include "pvclib.h"
 
+#define CMD_MAX_LENGTH 20
+
 int xPosition = 0;
 int yPosition = 0;
 
@@ -24,7 +26,7 @@ void pvcSetup()
  */
 void pvcLoop()
 {
-  byte cmd[10];
+  byte cmd[CMD_MAX_LENGTH];
   
   clearCmd(cmd);
 
@@ -39,9 +41,9 @@ void pvcLoop()
 /*
  * Cleans up the command variable.
  */
-void clearCmd(byte cmd[10])
+void clearCmd(byte cmd[CMD_MAX_LENGTH])
 {
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < CMD_MAX_LENGTH; i++)
   {
     cmd[i] = '\n';
   }
@@ -53,11 +55,16 @@ void clearCmd(byte cmd[10])
  * This function fetches data from the serial port and loads a new
  * command in `cmd` to be executed by the Arduino.
  */
-void getCmd(byte cmd[10])
+void getCmd(byte cmd[CMD_MAX_LENGTH])
 {
   int x = 0;
   while (Serial.available() > 0) {
     cmd[x] = Serial.read();
+    if (char(cmd[x]) == ';') {
+      // We have reached the end of the command and previous calls
+      // to Serial.read() have removed the command from the serial buffer.
+      break;
+    }
     x++;
     delay(100);
   }
@@ -67,12 +74,12 @@ void getCmd(byte cmd[10])
 /*
  * Prints out the command to be executed to the serial monitor.
  */
-void printCmd(byte cmd[10])
+void printCmd(byte cmd[CMD_MAX_LENGTH])
 {
   if (cmd[0] != '\n')
   {
     Serial.print("CMD: ");
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < CMD_MAX_LENGTH; i++)
     {
       if (cmd[i] != '\n')
         Serial.print(char(cmd[i]));
@@ -83,33 +90,33 @@ void printCmd(byte cmd[10])
 
 
 /*
- * Parses the command to be executed (10 bytes long) and run the appropriate
+ * Parses the command to be executed (CMD_MAX_LENGTH bytes long) and run the appropriate
  * low-level function.
  */
-void runCmd(byte cmd[10])
+void runCmd(byte cmd[CMD_MAX_LENGTH])
 {
-  if (cmd[0] != '\n')
-  {
-    char letter = cmd[0];
+  // if (cmd[0] != '\n')
+  // {
+  //   char letter = cmd[0];
 
-    if (letter == CMD_GOTO)
-    {
-      goTo(cmd);
-    }  
-    else if (letter == CMD_READ)
-    {
-      readValue(cmd);
-    }
-    else
-    {
-      Serial.println("Invalid command");
-    }
-  }
+  //   if (letter == CMD_GOTO)
+  //   {
+  //     goTo(cmd);
+  //   }  
+  //   else if (letter == CMD_READ)
+  //   {
+  //     readValue(cmd);
+  //   }
+  //   else
+  //   {
+  //     Serial.println("Invalid command");
+  //   }
+  // }
 }
 
 
 
-void goTo(byte cmd[10])
+void goTo(byte cmd[CMD_MAX_LENGTH])
 {  
 
   Serial.println("Going to...");
@@ -136,7 +143,7 @@ void goTo(byte cmd[10])
   //gimbalGo(xPosition, yPosition);
 }
 
-void readValue(byte cmd[10])
+void readValue(byte cmd[CMD_MAX_LENGTH])
 {
   Serial.println("Reading value...");
 

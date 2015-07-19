@@ -133,6 +133,6 @@ if __name__ == '__main__':
     print("Starting tests...")
     driver = PVDriver()
     driver.set_position(rot=2.8)
-    print("RESPONSE: " + str(driver._arduino.readline()))
+    driver.set_position(rot=67.8, tilt=28, relative=True)
     driver.close_connexion()
     print("Done.")
