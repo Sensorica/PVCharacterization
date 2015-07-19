@@ -95,17 +95,29 @@ class PVDriver:
             print("You did not provide any angle. Nothing to do here.")
             pass
 
-    def _send_command(self, cmd):
+    def _send_command(self, cmd, fb_required=False, res_pattern=None):
         """
         Takes a string command in parameter and sends it to the Arduino.
+        If the provided command requires an answer from the Arduino, then
+        lock the process until we receive the response and return it.
         """
-        # First make sure the device is IDLE
-        state = self._get_state()
-        while state != PVDriver.IDLE:
-            # Wait for 500ms before checking the current state
-            time.sleep(0.5)
-            state = self._get_state()
         self._arduino.write(bytearray(cmd, 'ascii'))
+        if fb_required:
+            if not res_pattern:
+                raise RuntimeError("You can't use fb_required without"
+                                   " providing a response pattern. Usage: "
+                                   "_send_command(cmd, "
+                                   "             fb_required=True, "
+                                   "             res_pattern=<some_string>")
+            print("This is a blocking command. Waiting for feedback from the"
+                  " Arduino.")
+            res = str(self._arduino.readline())
+            print(res)
+            while res_pattern not in res:
+                time.sleep(4)
+                res = self._arduino.readline()
+                print(res)
+            return res
 
     def _get_state(self):
         """
@@ -115,7 +127,16 @@ class PVDriver:
             * 1  = MOVING
             * -1 = ERROR
         """
-        return PVDriver.IDLE
+        print("Getting the state")
+        res = self._send_command(
+                        "RS;",
+                        fb_required=True,
+                        res_pattern="STATE:")
+        print("We've got the state")
+        # The received answer is supposed to be something like
+        #         STATE:0|1|-1
+        state = int(res.split(':')[1])
+        return state
 
     def _get_controller_parameters(self):
         """
@@ -134,5 +155,6 @@ if __name__ == '__main__':
     driver = PVDriver()
     driver.set_position(rot=2.8)
     driver.set_position(rot=67.8, tilt=28, relative=True)
+    driver._get_state()
     driver.close_connexion()
     print("Done.")
