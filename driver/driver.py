@@ -64,28 +64,28 @@ class PVDriver:
             # We need to call goToTilt and goToRot subsequently
             print("Both a tilt and rotation angles have been provided.")
             if relative:
-                cmd_tilt = "GTR," + str(tilt)
-                cmd_rot = "GRR," + str(rot)
+                cmd_tilt = "GTR," + str(tilt) + ';'
+                cmd_rot = "GRR," + str(rot) + ';'
             else:
-                cmd_tilt = "GT," + str(tilt)
-                cmd_rot = "GR," + str(rot)
+                cmd_tilt = "GT," + str(tilt) + ';'
+                cmd_rot = "GR," + str(rot) + ';'
             self._send_command(cmd_tilt)
             self._send_command(cmd_rot)
 
         elif tilt:
             print("Only a tilt angle was provided.")
             if relative:
-                cmd = "GTR," + str(tilt)
+                cmd = "GTR," + str(tilt) + ';'
             else:
-                cmd = "GT," + str(tilt)
+                cmd = "GT," + str(tilt) + ';'
             self._send_command(cmd)
 
         elif rot:
             print("Only a rotation angle was provided")
             if relative:
-                cmd = "GRR," + str(rot)
+                cmd = "GRR," + str(rot) + ';'
             else:
-                cmd = "GR," + str(rot)
+                cmd = "GR," + str(rot) + ';'
             self._send_command(cmd)
 
         else:

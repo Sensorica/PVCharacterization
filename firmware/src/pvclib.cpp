@@ -71,7 +71,7 @@ void printCmd(byte cmd[10])
 {
   if (cmd[0] != '\n')
   {
-    Serial.print("Command to be executed: ");
+    Serial.print("CMD: ");
     for (int i = 0; i < 10; i++)
     {
       if (cmd[i] != '\n')
