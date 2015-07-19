@@ -6,7 +6,7 @@ The aim of the project is to design and create a tool for optical characterizati
 ### Firmware
 TODO
 
-### Client
+### Client (GUI + driver)
 * Python 3.*
 * PySerial
 
