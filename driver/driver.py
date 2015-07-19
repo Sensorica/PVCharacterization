@@ -82,5 +82,8 @@ if __name__ == '__main__':
     print("Starting tests...")
     driver = PVDriver()
     driver.set_position(tilt=42.5)
-    driver._arduino.write(bytearray("Sensorica", 'ascii'))
+    msg = "Sensorica"
+    print("MESSAGE SENT: " + msg)
+    driver._arduino.write(bytearray(msg, 'ascii'))
+    print("RESPONSE: " + str(driver._arduino.readline()))
     print("Done.")
