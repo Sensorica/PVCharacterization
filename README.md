@@ -17,11 +17,12 @@ $ pip install -r requirements.txt
 ```
 
 ## Structure
-The repository contains 3 main components:
+The repository contains 4 main components:
 
-* The **Arduino firmware** that is in charge of controlling the electro-mechanical system (found under `firmware`)
-* The cross-platform **driver** allowing a computer to communicate with the firmware living in the Arduino (found under `driver`)
-* The **GUI** of the laptop application (found under `GUI`)
+* The **Arduino firmware** that is in charge of controlling the electro-mechanical system.
+* The cross-platform **driver** allowing a Python application to communicate with the firmware living in the Arduino.
+* The core **application** that is in charge of defining higher level features and that uses the driver to communicate with the Arduino.
+* The **GUI** of the laptop application.
 
 ### Arduino firmware
 The source code of the Arduino firmware is found under `firmware/src`. You can either use the official IDE to build the binaries and upload them to your Arduino, or you can use the [Ino CLI](http://inotool.org/):
@@ -32,3 +33,12 @@ $ ino upload
 ```
 
  If you do use Ino, you may have to edit the configuration file `ino.ini`.
+ 
+### Driver
+ TODO
+ 
+### Core application
+ TODO
+ 
+### GUI
+ TODO
