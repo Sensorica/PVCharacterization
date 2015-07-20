@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module driver</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>driver</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/touc/workspace/PVCharacterization/driver/driver.py">/home/touc/workspace/PVCharacterization/driver/driver.py</a></font></td></tr></table>
+    <p><tt>driver.py<br>
+---------<br>
+The&nbsp;driver&nbsp;module&nbsp;for&nbsp;the&nbsp;PVCharacterization&nbsp;project.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;defines&nbsp;the&nbsp;`<a href="#PVDriver">PVDriver</a>`&nbsp;class&nbsp;that&nbsp;can&nbsp;be&nbsp;instanciated&nbsp;to<br>
+communicate&nbsp;with&nbsp;an&nbsp;Arduino&nbsp;loaded&nbsp;with&nbsp;our&nbsp;firmware.&nbsp;Call&nbsp;any&nbsp;of<br>
+the&nbsp;public&nbsp;methods&nbsp;on&nbsp;a&nbsp;<a href="#PVDriver">PVDriver</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;in&nbsp;order&nbsp;to&nbsp;send&nbsp;a&nbsp;command<br>
+to&nbsp;the&nbsp;slave&nbsp;device&nbsp;over&nbsp;the&nbsp;serial&nbsp;port.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="serial.html">serial</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="driver.html#PVDriver">PVDriver</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="PVDriver">class <strong>PVDriver</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;class&nbsp;used&nbsp;to&nbsp;represent&nbsp;the&nbsp;bridge&nbsp;between&nbsp;a&nbsp;computer&nbsp;and&nbsp;an&nbsp;Arduino<br>
+loaded&nbsp;with&nbsp;our&nbsp;firmware.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="PVDriver-__init__"><strong>__init__</strong></a>(self, port='/dev/ttyACM0', baud_rate=9600, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="PVDriver-close_connexion"><strong>close_connexion</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="PVDriver-get_position"><strong>get_position</strong></a>(self, unit='degree')</dt><dd><tt>Retrieve&nbsp;the&nbsp;current&nbsp;absolute&nbsp;tilt&nbsp;and&nbsp;rotation&nbsp;angles&nbsp;of&nbsp;the&nbsp;device.<br>
+Return&nbsp;a&nbsp;tuple&nbsp;(ti,&nbsp;rot)&nbsp;containing&nbsp;the&nbsp;current&nbsp;state&nbsp;expressed&nbsp;in<br>
+degree&nbsp;by&nbsp;default.</tt></dd></dl>
+
+<dl><dt><a name="PVDriver-set_position"><strong>set_position</strong></a>(self, tilt=None, rot=None, unit='degree', relative=False)</dt><dd><tt>Send&nbsp;a&nbsp;new&nbsp;position&nbsp;setpoint&nbsp;to&nbsp;the&nbsp;device.&nbsp;Both&nbsp;`tilt`&nbsp;and&nbsp;`rot`<br>
+are&nbsp;set&nbsp;as&nbsp;optional&nbsp;parameters&nbsp;to&nbsp;allow&nbsp;rotation&nbsp;on&nbsp;a&nbsp;single&nbsp;axis.<br>
+&nbsp;<br>
+Unless&nbsp;stated&nbsp;otherwise,&nbsp;angles&nbsp;are&nbsp;expressed&nbsp;in&nbsp;degree.<br>
+&nbsp;<br>
+Unless&nbsp;stated&nbsp;otherwise,&nbsp;positions&nbsp;are&nbsp;set&nbsp;as&nbsp;absolute.&nbsp;If&nbsp;you&nbsp;want<br>
+to&nbsp;move&nbsp;the&nbsp;device&nbsp;relatively&nbsp;to&nbsp;its&nbsp;current&nbsp;position,&nbsp;set&nbsp;`relative`<br>
+to&nbsp;True&nbsp;in&nbsp;the&nbsp;parameters.<br>
+Example,&nbsp;rotate&nbsp;+2°&nbsp;on&nbsp;the&nbsp;tilt&nbsp;axis&nbsp;and&nbsp;-5°&nbsp;on&nbsp;the&nbsp;rot&nbsp;axis:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;driver&nbsp;=&nbsp;<a href="#PVDriver">PVDriver</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;driver.<a href="#PVDriver-set_position">set_position</a>(tilt=2,&nbsp;rot=-5,&nbsp;relative=True)<br>
+&nbsp;<br>
+Example&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;set&nbsp;the&nbsp;absolute&nbsp;tilt&nbsp;angle&nbsp;and&nbsp;leave&nbsp;the<br>
+rotation&nbsp;angle&nbsp;unchanged:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;driver.<a href="#PVDriver-set_position">set_position</a>(tilt=76.42)<br>
+&nbsp;<br>
+Calling&nbsp;`set_position`&nbsp;without&nbsp;any&nbsp;argument&nbsp;is&nbsp;useless&nbsp;as&nbsp;it&nbsp;won't<br>
+have&nbsp;any&nbsp;impact&nbsp;on&nbsp;the&nbsp;current&nbsp;setpoint.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ERROR</strong> = -1</dl>
+
+<dl><dt><strong>IDLE</strong> = 0</dl>
+
+<dl><dt><strong>MOVING</strong> = 1</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>
