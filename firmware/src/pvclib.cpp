@@ -32,7 +32,7 @@ void pvcLoop()
 
   getCmd(cmd);
 
-  printCmd(cmd);
+  // printCmd(cmd);
 
   runCmd(cmd);
 }
@@ -52,8 +52,12 @@ void clearCmd(char cmd[CMD_MAX_LENGTH])
 
 /*
  * Assumes `cmd` has been previously cleaned by `clearCmd`.
- * This function fetches data from the serial port and loads a new
+ * This function fetches data from the serial buffer and loads a new
  * command in `cmd` to be executed by the Arduino.
+ *
+ * Incoming commands have the following syntax:
+ *       <operand>[,<arg>];
+ * The semi-colon (';') marking the end of the command.
  */
 void getCmd(char cmd[CMD_MAX_LENGTH])
 {
@@ -73,7 +77,8 @@ void getCmd(char cmd[CMD_MAX_LENGTH])
 
 
 /*
- * Prints out the command to be executed to the serial monitor.
+ * Prints out the command to be executed to the serial output.
+ * Useful for debugging but should not be used in production.
  */
 void printCmd(char cmd[CMD_MAX_LENGTH])
 {
@@ -96,51 +101,38 @@ void printCmd(char cmd[CMD_MAX_LENGTH])
  */
 void runCmd(char cmd[CMD_MAX_LENGTH])
 {
-  char operand[CMD_MAX_LENGTH];
+  char operand[6];
+  float argument;
+
   if (cmd[0] != '\n')
   {
-    for (int i=0; i<CMD_MAX_LENGTH; i++)
-    {
-      if (char(cmd[i]) != ',' && cmd[i] != '\n') {
-        operand[i] = cmd[i];
-      }
-      else {
-        operand[i] = '\0';
-        break;
+    char cmd_copy[CMD_MAX_LENGTH];
+    char* parsed;
+    strcpy(cmd_copy, cmd);
+    char* delimiters = ",";
+
+    parsed = strtok(cmd_copy, delimiters);
+    if (parsed != NULL) {
+      strcpy(operand, parsed);
+      parsed = strtok(NULL, delimiters);
+      if (parsed != NULL) {
+        argument = atof(parsed);
       }
     }
 
-    Serial.print("OPERAND: ");
-    Serial.print(operand);
-    Serial.println();
-
-    if (strcmp(operand,"RS") == 0)
-    {
-      // Return the current state
+    // At this point, operand and argument are populated.
+    // Start interpreting.
+    
+    // READ STATE
+    if (strcmp(operand, "RS") == 0) {
       Serial.println("STATE:1");
     }
-    else {
-      Serial.println("Operand not equal to RS");
+
+    if (strcmp(operand, "GT") == 0) {
+      // do some stuff...
     }
   }
 
-  // if (cmd[0] != '\n')
-  // {
-  //   char letter = cmd[0];
-
-  //   if (letter == CMD_GOTO)
-  //   {
-  //     goTo(cmd);
-  //   }  
-  //   else if (letter == CMD_READ)
-  //   {
-  //     readValue(cmd);
-  //   }
-  //   else
-  //   {
-  //     Serial.println("Invalid command");
-  //   }
-  // }
 }
 
 
