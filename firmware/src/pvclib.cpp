@@ -114,7 +114,7 @@ void runCmd(char cmd[CMD_MAX_LENGTH])
     Serial.print(operand);
     Serial.println();
 
-    if (operand == "RS")
+    if (strcmp(operand,"RS") == 0)
     {
       // Return the current state
       Serial.println("STATE:1");
