@@ -63,9 +63,9 @@ class PVDriver:
         Calling `set_position` without any argument is useless as it won't
         have any impact on the current setpoint.
         """
+        print("SET_POSITION")
         if tilt and rot:
             # We need to call goToTilt and goToRot subsequently
-            print("Both a tilt and rotation angles have been provided.")
             if relative:
                 cmd_tilt = "GTR," + str(tilt) + ';'
                 cmd_rot = "GRR," + str(rot) + ';'
@@ -76,7 +76,7 @@ class PVDriver:
             self._send_command(cmd_rot)
 
         elif tilt:
-            print("Only a tilt angle was provided.")
+            # Only a tilt angle was provided
             if relative:
                 cmd = "GTR," + str(tilt) + ';'
             else:
@@ -84,7 +84,7 @@ class PVDriver:
             self._send_command(cmd)
 
         elif rot:
-            print("Only a rotation angle was provided")
+            # Only a rotation angle was provided
             if relative:
                 cmd = "GRR," + str(rot) + ';'
             else:
@@ -109,8 +109,9 @@ class PVDriver:
                                    "_send_command(cmd, "
                                    "             fb_required=True, "
                                    "             res_pattern=<some_string>")
-            print("This is a blocking command. Waiting for feedback from the"
+            print("This is a blocking request. Waiting for feedback from the"
                   " Arduino.")
+            time.sleep(0.1)
             res = self._arduino.readline().decode('utf-8')
             while res_pattern not in res:
                 time.sleep(0.1)
@@ -150,7 +151,7 @@ if __name__ == '__main__':
     print("Starting tests...")
     driver = PVDriver()
     driver.set_position(rot=2.8)
-    driver.set_position(rot=67.8, tilt=28, relative=True)
+    driver.set_position(rot=67.8, tilt=25.89, relative=True)
     driver._get_state()
     driver.close_connexion()
     print("Done.")
