@@ -111,12 +111,10 @@ class PVDriver:
                                    "             res_pattern=<some_string>")
             print("This is a blocking command. Waiting for feedback from the"
                   " Arduino.")
-            res = str(self._arduino.readline())
-            print(res)
+            res = self._arduino.readline().decode('utf-8')
             while res_pattern not in res:
-                time.sleep(4)
-                res = self._arduino.readline()
-                print(res)
+                time.sleep(0.1)
+                res = self._arduino.readline().decode('utf-8')
             return res
 
     def _get_state(self):
@@ -127,12 +125,10 @@ class PVDriver:
             * 1  = MOVING
             * -1 = ERROR
         """
-        print("Getting the state")
         res = self._send_command(
                         "RS;",
                         fb_required=True,
                         res_pattern="STATE:")
-        print("We've got the state")
         # The received answer is supposed to be something like
         #         STATE:0|1|-1
         state = int(res.split(':')[1])
