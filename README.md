@@ -3,12 +3,13 @@
 The aim of the project is to design and create a tool for optical characterization of thin and transparent materials. More details can be found on [the official website](http://www.sensorica.co/home/what-we-do/projects/pv-characterization).
 
 ## Dependencies
-### Firmware
-TODO
 
-### Client (GUI + driver)
+### Python Client
 * Python 3.*
 * PySerial
+
+### Arduino Firmware
+TODO
 
 Using `pip` you can install all the requirements with
 
