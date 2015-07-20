@@ -8,14 +8,14 @@ The aim of the project is to design and create a tool for optical characterizati
 * Python 3.*
 * PySerial
 
-### Arduino Firmware
-TODO
-
-Using `pip` you can install all the requirements with
+Using `pip` or `pip3` you can install all the python requirements with
 
 ```console
 $ pip install -r requirements.txt
 ```
+
+### Arduino Firmware
+TODO
 
 ## Structure
 The repository contains 4 main components:
