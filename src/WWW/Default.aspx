@@ -34,7 +34,7 @@
 
 	$(document).ready(function(){
 		$("#startCameraButton").click(function() {
-  			$("#cameraContainer").html("<iframe src='http://127.0.0.1:8081/' frameborder='0' height='260' width='350' />");
+  			$("#cameraContainer").html("<iframe src='http://127.0.0.1:8081/' frameborder='0' height='400' width='700' />");
 		});
 
 		$("#goButton").click(function() {
@@ -104,6 +104,10 @@
 	});
 	</script>
 	<form id="form1" runat="server">
+	<div style="float:right">
+	<div id="cameraContainer">Click "start camera"...</div>
+	<input type="button" value="Start Camera" id="startCameraButton" />
+	</div>
 	<h1>PV Characterization</h1>
 	<div>
 	Port: <input type="text" name="portName" id="portName" value='<%= portName %>'/> [If not automatically detected; ensure the arduino is connected via USB and hit refresh]
@@ -113,10 +117,6 @@
 	Y: <input type="text" name="yPosition" id="yPosition" value="0"/><input type="button" id="yDownButton" value="&lt;"><input type="button" id="yUpButton" value="&gt;"><input type="button" id="yResetButton" value="Reset"></br>
 	Read count: <input type="text" name="readCount" id="readCount" value="5"/>
 	<input type="button" id="goButton" value="Go" />
-	</div>
-	<div>
-	<div id="cameraContainer">Click "start camera"...</div>
-	<input type="button" value="Start Camera" id="startCameraButton" />
 	</div>
 	<h2>Output</h2>
 	<div id="outputContainer">[Use the "Go" button above to see the output]</div>
