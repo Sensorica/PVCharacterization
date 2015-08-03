@@ -11,7 +11,7 @@
 #endif
 
 #if HWTYPE == PVCSTEPPER
-// TODO: Add stepper includes
+ #include "pvcstepper.h"
 #endif
 
 #include "pvclib.h"
