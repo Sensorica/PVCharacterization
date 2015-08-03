@@ -3,12 +3,15 @@ using System.Threading;
 using System.IO.Ports;
 using System.Text;
 
-namespace PVC.Core
+namespace Duinocom
 {
-	public class SerialPortDetector
+	public class DuinoPortDetector
 	{
-		public SerialPortDetector ()
+		public string Identifier = "";
+
+		public DuinoPortDetector (string identifier)
 		{
+			Identifier = identifier;
 		}
 
 		public string Detect()
@@ -63,7 +66,7 @@ namespace PVC.Core
 			} finally {
 				port.Close ();
 			}
-			if (returnMessage.Contains ("PVC")) {
+			if (returnMessage.Contains (Identifier)) {
 				return true;
 			} else {
 				return false;

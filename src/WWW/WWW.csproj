@@ -58,5 +58,9 @@
       <Project>{B6889395-7437-47F2-A507-76FD008D58FA}</Project>
       <Name>PVC.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Duinocom\Duinocom.csproj">
+      <Project>{7DC144D8-E73C-48FD-B650-7F646FF8782F}</Project>
+      <Name>Duinocom</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

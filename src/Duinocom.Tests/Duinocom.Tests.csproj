@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C78A3AAC-44F1-48BC-921A-95F823C871EF}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>DetectPort</RootNamespace>
-    <AssemblyName>DetectPort</AssemblyName>
+    <ProjectGuid>{4F212B2E-AEFA-47AF-BEBE-FF8212FADA78}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Duinocom.Tests</RootNamespace>
+    <AssemblyName>Duinocom.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,7 +17,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -25,20 +25,14 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Duinocom\Duinocom.csproj">
-      <Project>{7DC144D8-E73C-48FD-B650-7F646FF8782F}</Project>
-      <Name>Duinocom</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

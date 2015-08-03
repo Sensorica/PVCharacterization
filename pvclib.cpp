@@ -35,7 +35,6 @@ void pvcSetup()
 
 void pvcLoop()
 {
-  //Serial.println(millis());
   byte cmd[10];
   
   clearCmd(cmd);
@@ -54,7 +53,6 @@ void getCmd(byte cmd[10])
   while (Serial.available() > 0) {
     cmd[x] = Serial.read();
     
-  Serial.print(cmd[x]);
     x++;
     delay(100);
   }
@@ -64,10 +62,9 @@ void runCmd(byte cmd[10])
 {
   if (cmd[0] != '\0')
   {
-    //  digitalWrite(13, HIGH);
     char letter = cmd[0];
 
-    if (letter == identifyCmd) // ASCII code
+    if (letter == identifyCmd)
     {
       identify();
     }  
@@ -143,6 +140,7 @@ void goTo(byte cmd[10])
   Serial.println(axis);
   Serial.print("Degrees:");
   Serial.println(degrees);
+  Serial.println();
   
   gimbalGo(xPosition, yPosition);
 }
@@ -219,11 +217,13 @@ void readValue(byte cmd[10])
 
   for (int i = 0; i < numberOfReadings; i++)
   {
-    int reading = analogRead(dataPin);
+    float reading = analogRead(dataPin);
+    
+    float voltageReading = reading * (5.0 / 1023.0);
 
     // Start the line with "D;" to indicate the rest of the line is data
     Serial.print("D:");
-    Serial.print(reading);
+    Serial.print(voltageReading);
     Serial.print(";X:");
     Serial.print(xPosition);
     Serial.print(";Y:");

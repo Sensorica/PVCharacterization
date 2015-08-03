@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO.Ports; //required for SerialPort class
 using System.Threading;
-using PVC.Core;
+using Duinocom;
 
 namespace SerialPortCommunicationExample
 {
@@ -13,7 +13,7 @@ namespace SerialPortCommunicationExample
 
 		static void Main(string[] args)
 		{
-			Console.WriteLine (new SerialPortDetector ().Detect ());
+			Console.WriteLine (new DuinoPortDetector ("PVC").Detect ());
 		}
 
 	}
