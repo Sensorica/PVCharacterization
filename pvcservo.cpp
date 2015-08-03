@@ -14,7 +14,7 @@ void pvcServoSetup()
   servoY.attach(servoYPin);  // attaches the servo
 }
 
-void gimbalGo(int x, int y)
+void servoGimbalGo(int x, int y)
 {
   int xPosition = 0;
   int yPosition = 0;

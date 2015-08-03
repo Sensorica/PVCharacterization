@@ -21,4 +21,6 @@ void decrease(byte cmd[10]);
 
 void readValue(byte cmd[10]);
 
+void gimbalGo(int x, int y);
+
 #endif /* pvclib_H_ */

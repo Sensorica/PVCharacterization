@@ -7,7 +7,7 @@
 #endif
 
 #if HWTYPE == PVCSTEPPER
-// TODO: Add stepper includes
+ #include "pvcstepper.h"
 #endif
 
 int xPosition = 0;
@@ -28,7 +28,7 @@ void pvcSetup()
   #endif
   
   #if HWTYPE == PVCSTEPPER
-  // TODO: Add stepper setup
+   pvcStepperSetup();
   #endif
 }
 
@@ -217,4 +217,15 @@ void readValue(byte cmd[10])
     Serial.print(yPosition);
     Serial.println(";");
   }
+}
+
+void gimbalGo(int x, int y)
+{
+  #if HWTYPE == PVCSERVO
+   servoGimbalGo(x, y);
+  #endif
+  
+  #if HWTYPE == PVCSTEPPER
+   stepperGimbalGo(x, y);
+  #endif
 }

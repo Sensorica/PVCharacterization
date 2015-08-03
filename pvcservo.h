@@ -3,6 +3,6 @@
 
 void pvcServoSetup();
 
-void gimbalGo(int x, int y);
+void servoGimbalGo(int x, int y);
 
 #endif /* pvcservo_H_ */
