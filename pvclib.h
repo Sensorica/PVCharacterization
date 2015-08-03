@@ -13,6 +13,8 @@ void printCmd(byte cmd[10]);
 
 void clearCmd(byte cmd[10]);
 
+void identify();
+
 void goTo(byte cmd[10]);
 
 void increase(byte cmd[10]);

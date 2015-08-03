@@ -13,6 +13,7 @@
 int xPosition = 0;
 int yPosition = 0;
 
+const char identifyCmd = '#';
 const char goToCmd = 'G';
 const char readCmd = 'R';
 const char scanCmd = 'S';
@@ -34,6 +35,7 @@ void pvcSetup()
 
 void pvcLoop()
 {
+  //Serial.println(millis());
   byte cmd[10];
   
   clearCmd(cmd);
@@ -51,6 +53,8 @@ void getCmd(byte cmd[10])
   int x = 0;
   while (Serial.available() > 0) {
     cmd[x] = Serial.read();
+    
+  Serial.print(cmd[x]);
     x++;
     delay(100);
   }
@@ -58,11 +62,16 @@ void getCmd(byte cmd[10])
 
 void runCmd(byte cmd[10])
 {
-  if (cmd[0] != '\n')
+  if (cmd[0] != '\0')
   {
+    //  digitalWrite(13, HIGH);
     char letter = cmd[0];
 
-    if (letter == goToCmd)
+    if (letter == identifyCmd) // ASCII code
+    {
+      identify();
+    }  
+    else if (letter == goToCmd)
     {
       goTo(cmd);
     }  
@@ -87,12 +96,12 @@ void runCmd(byte cmd[10])
 
 void printCmd(byte cmd[10])
 {
-  if (cmd[0] != '\n')
+  if (cmd[0] != '\0')
   {
     Serial.print("Cmd:");
     for (int i = 0; i < 10; i++)
     {
-      if (cmd[i] != '\n')
+      if (cmd[i] != '\0')
         Serial.print(char(cmd[i]));
     }
     Serial.println();
@@ -103,13 +112,17 @@ void clearCmd(byte cmd[10])
 {
   for (int i = 0; i < 10; i++)
   {
-    cmd[i] = '\n';
+    cmd[i] = '\0';
   }
+}
+
+void identify()
+{
+  Serial.println("PVC");
 }
 
 void goTo(byte cmd[10])
 {  
-
   Serial.println("Going to...");
 
   char axis = char(cmd[1]);
@@ -192,7 +205,7 @@ void readValue(byte cmd[10])
 
   int numberOfReadings = 1;
 
-  if (cmd[1] != '\n')
+  if (cmd[1] != '\0')
   {
     char buffer[3];
     buffer[0] = cmd[1];
