@@ -15,10 +15,7 @@ void pvcServoSetup()
 }
 
 void servoGimbalGo(int x, int y)
-{
-  int xPosition = 0;
-  int yPosition = 0;
-  
+{  
   /*Serial.print("Moving servo - ");
   Serial.print("X:");
   Serial.print(x);
