@@ -16,6 +16,8 @@ int yPosition = 0;
 const char goToCmd = 'G';
 const char readCmd = 'R';
 const char scanCmd = 'S';
+const char decreaseCmd = 'D';
+const char increaseCmd = 'I';
 
 const int dataPin = A0;
 
@@ -64,6 +66,14 @@ void runCmd(byte cmd[10])
     {
       goTo(cmd);
     }  
+    else if (letter == increaseCmd)
+    {
+      increase(cmd);
+    }
+    else if (letter == decreaseCmd)
+    {
+      decrease(cmd);
+    }
     else if (letter == readCmd)
     {
       readValue(cmd);
@@ -115,6 +125,58 @@ void goTo(byte cmd[10])
     xPosition = degrees;
   else if (axis == 'Y')
     yPosition = degrees;
+
+  Serial.print("Axis:");
+  Serial.println(axis);
+  Serial.print("Degrees:");
+  Serial.println(degrees);
+  
+  gimbalGo(xPosition, yPosition);
+}
+
+void increase(byte cmd[10])
+{  
+  Serial.println("Increasing...");
+
+  char axis = char(cmd[1]);
+
+  // Get the number of degrees (up to 3 digits)
+  char buffer[3];
+  buffer[0] = cmd[2];
+  buffer[1] = cmd[3];
+  buffer[2] = cmd[4];
+  int degrees = atoi(buffer);
+
+  if (axis == 'X')
+    xPosition += degrees;
+  else if (axis == 'Y')
+    yPosition += degrees;
+
+  Serial.print("Axis:");
+  Serial.println(axis);
+  Serial.print("Degrees:");
+  Serial.println(degrees);
+  
+  gimbalGo(xPosition, yPosition);
+}
+
+void decrease(byte cmd[10])
+{  
+  Serial.println("Decreasing...");
+
+  char axis = char(cmd[1]);
+
+  // Get the number of degrees (up to 3 digits)
+  char buffer[3];
+  buffer[0] = cmd[2];
+  buffer[1] = cmd[3];
+  buffer[2] = cmd[4];
+  int degrees = atoi(buffer);
+
+  if (axis == 'X')
+    xPosition -= degrees;
+  else if (axis == 'Y')
+    yPosition -= degrees;
 
   Serial.print("Axis:");
   Serial.println(axis);

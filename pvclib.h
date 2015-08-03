@@ -15,6 +15,10 @@ void clearCmd(byte cmd[10]);
 
 void goTo(byte cmd[10]);
 
+void increase(byte cmd[10]);
+
+void decrease(byte cmd[10]);
+
 void readValue(byte cmd[10]);
 
 #endif /* pvclib_H_ */
