@@ -5,13 +5,13 @@ The aim of the project is to design and create a tool for optical characterizati
 ## Dependencies
 
 ### Python Client
-* Python 3.*
+* Python 3
 * PySerial
 
-Using `pip` or `pip3` you can install all the python requirements with
+Using `pip3` you can install all the python requirements with
 
 ```console
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ### Arduino Firmware
