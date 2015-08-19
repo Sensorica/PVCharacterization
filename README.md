@@ -19,8 +19,8 @@ The aim of the project is to design and create a tool for optical characterizati
     ```console
     $ cd PVCharacterization
     $ source venv/bin/activate  # skip this if you are not using a virtualenv
-    $ cd driver
-    $ python driver.py   # if you are not using a virtualenv, make sure you are using python3
+    (venv)$ cd driver
+    (venv)$ python driver.py   # if you are not using a virtualenv, make sure you are using python3
     ```
 
 
