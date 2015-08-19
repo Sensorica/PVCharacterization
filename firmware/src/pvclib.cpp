@@ -96,7 +96,7 @@ void printCmd(char cmd[CMD_MAX_LENGTH])
 
 
 /*
- * Parses the command to be executed (CMD_MAX_LENGTH char long) and run the appropriate
+ * Parse the command to be executed (CMD_MAX_LENGTH chars long) and run the appropriate
  * low-level function.
  */
 void runCmd(char cmd[CMD_MAX_LENGTH])
@@ -107,8 +107,8 @@ void runCmd(char cmd[CMD_MAX_LENGTH])
   if (cmd[0] != '\n')
   {
     char cmd_copy[CMD_MAX_LENGTH];
-    char* parsed;
     strcpy(cmd_copy, cmd);
+    char* parsed;
     char* delimiters = ",";
 
     parsed = strtok(cmd_copy, delimiters);
@@ -120,12 +120,17 @@ void runCmd(char cmd[CMD_MAX_LENGTH])
       }
     }
 
-    // At this point, operand and argument are populated.
-    // Start interpreting.
+    // At this point, `operand` and `argument` are populated with meaningful values.
+    // Start dispatching.
     
     // READ STATE
     if (strcmp(operand, "RS") == 0) {
       Serial.println("STATE:1");
+    }
+
+    // READ POSITION
+    if (strcmp(operand, "RP") == 0) {
+      Serial.println("POS:34.3,-27.223");
     }
 
     if (strcmp(operand, "GT") == 0) {

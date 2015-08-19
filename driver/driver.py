@@ -20,13 +20,12 @@ class PVDriver:
     loaded with our firmware.
     """
 
-    # State constants are defined in a static way
+    # State constants are defined as static variables
     IDLE = 0
     MOVING = 1
     ERROR = -1
 
     def __init__(self, port='/dev/ttyACM0', baud_rate=9600, *args, **kwargs):
-        print("Hello world")
         self._arduino = serial.Serial(port, baud_rate, timeout=1)
 
     def close_connexion(self):
@@ -35,10 +34,20 @@ class PVDriver:
     def get_position(self, unit='degree'):
         """
         Retrieve the current absolute tilt and rotation angles of the device.
-        Return a tuple (ti, rot) containing the current state expressed in
-        degree by default.
+        Return a tuple (tilt, rot) containing the current state expressed in
+        degrees by default.
         """
-        return (0.0, 0.0)
+        print("GET POSITION")
+        res = self._send_command(
+                "RP;",
+                fb_required=True,
+                res_pattern="POS:"
+            )
+        # The received answer is expected to be something like
+        #        POS:<float:tilt>,<float:rot>
+        tilt = float(res.split(':')[1].split(',')[0])
+        rot = float(res.split(':')[1].split(',')[1])
+        return (tilt, rot)
 
     def set_position(self, tilt=None, rot=None, unit='degree', relative=False):
         """
@@ -100,7 +109,13 @@ class PVDriver:
         Takes a string command in parameter and sends it to the Arduino.
         If the provided command requires an answer from the Arduino, then
         lock the process until we receive the response and return it.
+
+        Use `fb_required` and `res_pattern` to explicitly ask for a feedback
+        from the embedded firmware.
         """
+        if not cmd.endswith(';'):
+            raise RuntimeError("Missing a semicolon at the end of the"
+                               " command. Invalid command.")
         self._arduino.write(bytearray(cmd, 'ascii'))
         if fb_required:
             if not res_pattern:
@@ -114,7 +129,7 @@ class PVDriver:
             time.sleep(0.1)
             res = self._arduino.readline().decode('utf-8')
             while res_pattern not in res:
-                time.sleep(0.1)
+                time.sleep(0.05)
                 res = self._arduino.readline().decode('utf-8')
             return res
 
@@ -126,6 +141,7 @@ class PVDriver:
             * 1  = MOVING
             * -1 = ERROR
         """
+        print("GET STATE")
         res = self._send_command(
                         "RS;",
                         fb_required=True,
@@ -133,7 +149,12 @@ class PVDriver:
         # The received answer is supposed to be something like
         #         STATE:0|1|-1
         state = int(res.split(':')[1])
-        return state
+        if state == PVDriver.IDLE:
+            return "IDLE"
+        elif state == PVDriver.MOVING:
+            return "MOVING"
+        else:
+            return "ERROR"
 
     def _get_controller_parameters(self):
         """
@@ -149,9 +170,19 @@ class PVDriver:
 
 if __name__ == '__main__':
     print("Starting tests...")
+    # Instantiate a new driver
     driver = PVDriver()
+
+    # Send non-blocking requests such as set_position
     driver.set_position(rot=2.8)
     driver.set_position(rot=67.8, tilt=25.89, relative=True)
-    driver._get_state()
+
+    # Send some blocking requests
+    state = driver._get_state()
+    print("State: " + state)
+    (tilt, rot) = driver.get_position()
+    print("Tilt: " + str(tilt) + "   Rot: " + str(rot))
+
+    # Close the connexion
     driver.close_connexion()
     print("Done.")
