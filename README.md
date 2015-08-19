@@ -38,7 +38,11 @@ Using `pip3` you can install all the python requirements with
 $ pip3 install -r requirements.txt
 ```
 
-We strongly recommand to use a [`virtualenv`](https://virtualenv.pypa.io/en/latest/) in order to build an isolate development environment.
+We strongly recommand to use a [`virtualenv`](https://virtualenv.pypa.io/en/latest/) in order to build an isolate development environment. If you do so, make sure to create a virtual environment for python 3 as `virtualenv` will assume python2.7 by default:
+
+```console
+$ virtualenv -p python3 venv
+```
 
 ### Arduino Firmware
 * [Ino](http://inotool.org/) (optional)
