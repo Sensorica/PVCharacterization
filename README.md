@@ -8,20 +8,20 @@ The aim of the project is to design and create a tool for optical characterizati
 3. Plug the Arduino in (on a USB port of your laptop)
 4. Build the firmware and upload it to the board. With `ino` this is as simple as
 
-```console
-$ cd PVCharacterization/firmware
-$ ino build   # Build the firmware (may take up to a few seconds)
-$ ino upload  # Upload
-```
+    ```console
+    $ cd PVCharacterization/firmware
+    $ ino build   # Build the firmware (may take up to a few seconds)
+    $ ino upload  # Upload
+    ```
 
 5. Run the driver test suite. On Linux or MacOS this gives:
 
-```console
-$ cd PVCharacterization
-$ source venv/bin/activate  # skip this if you are not using a virtualenv
-$ cd driver
-$ python driver.py   # if you are not using a virtualenv, make sure you are using python3
-```
+    ```console
+    $ cd PVCharacterization
+    $ source venv/bin/activate  # skip this if you are not using a virtualenv
+    $ cd driver
+    $ python driver.py   # if you are not using a virtualenv, make sure you are using python3
+    ```
 
 
 ## Dependencies
