@@ -1,6 +1,6 @@
 Configuration of the paramters is accomplished by a serial protocol.
-The user will not access the serial line directly, he will use a graphical user interface (GUI) running on a host pc.
-A proper gui tool (blg-tool) is located in the GUI folder.
+The user will not access the serial line directly, he will use a graphical user interface (GUI) running on a host pc (Raspberry Pi).
+A proper gui tool will be located in the GUI folder.
 
 The Arduino Serial Monitor can be used for debugging purposes.
 
