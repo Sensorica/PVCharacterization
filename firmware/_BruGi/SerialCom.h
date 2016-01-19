@@ -265,8 +265,8 @@ void updateAllParameters() {
   initIMU();
   initSensorOrientation();
   updateAngleOffset();
-  initRCPins();
-  initRC();
+  //initRCPins();
+  //initRC();
 }
 
 //******************************************************************************
@@ -365,25 +365,25 @@ void readEEPROM()
 //******************************************************************************
 // run GYRO calibration 
 //*****************************************************************************
-void gyroCalibrateCmd()
-{
-  printMessage(MSG_WARNING, F("GYRO Calibration, do not move ..."));
-  gyroOffsetCalibration();
-  printMessage(MSG_INFO, F("GYRO Calibration OK"));
+//void gyroCalibrateCmd()
+//{
+ // printMessage(MSG_WARNING, F("GYRO Calibration, do not move ..."));
+ // gyroOffsetCalibration();
+ // printMessage(MSG_INFO, F("GYRO Calibration OK"));
 }
 
 //******************************************************************************
 // run ACC calibration 
 //*****************************************************************************
-void accCalibrateCmd()
-{
-  printMessage(MSG_INFO, F("ACC Calibration, do not move ..."));
-  if (accCalibration() >= 0) {
-    Serial.println(F("ok"));
-    printMessage(MSG_INFO, F("ACC Calibration OK"));
-  } else {
-    printMessage(MSG_WARNING, F("ACC Calibration FAILED"));
-  }   
+//void accCalibrateCmd()
+//{
+ // printMessage(MSG_INFO, F("ACC Calibration, do not move ..."));
+ // if (accCalibration() >= 0) {
+ //   Serial.println(F("ok"));
+ //   printMessage(MSG_INFO, F("ACC Calibration OK"));
+ // } else {
+ //   printMessage(MSG_WARNING, F("ACC Calibration FAILED"));
+ // }   
 }
 
 //******************************************************************************

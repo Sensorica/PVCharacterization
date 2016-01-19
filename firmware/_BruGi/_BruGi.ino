@@ -29,10 +29,10 @@ Anyhow, if you start to commercialize our work, please read on http://www.sensor
 
 /* Note: software has been tested with Arduino Version 1.5.4 */
 
-#define VERSION_STATUS A // A = Alpha; B = Beta , N = Normal Release
-#define VERSION "v0.1"
-#define REVISION "r1"
-#define VERSION_EEPROM 1 // change this number when eeprom data structure has changed
+#define VERSION_STATUS B // A = Alpha; B = Beta , N = Normal Release
+#define VERSION "v50"
+#define REVISION "r217"
+#define VERSION_EEPROM 17 // change this number when eeprom data structure has changed
 
 
 /*************************/
@@ -42,22 +42,25 @@ Anyhow, if you start to commercialize our work, please read on http://www.sensor
 #include <Wire.h>
 #include <avr/pgmspace.h>
 #include "definitions.h"
-#include "MPU6050.h"     //                                                                   TODO - Replace with BNO055 library
+//#include "MPU6050.h"     //                                                                   TODO - Replace with BNO055 library
 #include "SerialCommand.h"
 #include "EEPROMAnything.h"
 #include "PinChangeInt.h"
 #include "Timer1.h"
 #include "Trace.h"
 #include "variables.h"  //                                                                    TODO - Remove unecessary variables      
-MPU6050 mpu;            // Create MPU object                                                  TODO - Replace with BNO055 
+//MPU6050 mpu;            // Create MPU object                                                  TODO - Replace with BNO055 
 SerialCommand sCmd;     // Create SerialCommand object
 
-#include "fastMathRoutines.h"     // fast Math functions required by orientationRoutines.h    TODO - REMOVE, not required for BNO055 
-#include "orientationRoutines.h"  // get Orientation from ACC                                 TODO - REMOVE, not required for BNO055 
-#include "RCdecode.h"             // RC Decoder to move camera by servo signal input          TODO - Must test if still needed
+//#include "fastMathRoutines.h"     // fast Math functions required by orientationRoutines.h    TODO - REMOVE, not required for BNO055 
+//#include "orientationRoutines.h"  // get Orientation from ACC                                 TODO - REMOVE, not required for BNO055 
+//#include "RCdecode.h"             // RC Decoder to move camera by servo signal input          TODO - Must test if still needed
 #include "BLcontroller.h"         // Motor Movement Functions and Timer Config
 #include "SerialCom.h"            // Serial Protocol for Configuration and Communication
-
+#include "Adafruit_Sensor.h"
+#include "Adafruit_BNO055.h"
+#include "imumaths.h"
+//#include "I2Cdev.h"
 
 /**********************************************/
 /* Initialization                             */
@@ -71,7 +74,7 @@ void setup()
   heapCheck();
 #endif
 
-  initControlPanelPins();
+  //initControlPanelPins();
   
   LEDPIN_PINMODE
   
@@ -113,31 +116,31 @@ void setup()
   TWCR = 1<<TWEN;                            // enable twi module, no interrupt
  
   // Initialize MPU 
-  initResolutionDevider();  //                                                                   TODO - Probably not needed
-    
+  //initResolutionDevider();  //                                                                   TODO - Probably not needed
+ // initI2C();  
   // init I2C and MPU6050   //                                                                   TODO - Replace with BNO055 code
-  if (initI2C()) {  
+ // if (initI2C()) {  
     // Init IMU variables
-    initIMU();
+   // initIMU();
     // Gyro Offset calibration
-    if (config.gyroCal) {
-      gyroCalibrateCmd();
-    }
-  } else {
-    gimState = GIM_ERROR;
-  }
+   // if (config.gyroCal) {
+ //     gyroCalibrateCmd();
+ //   }
+ // } else {
+ //   gimState = GIM_ERROR;
+ // }
   
   // set sensor orientation
-  initSensorOrientation();
+  //initSensorOrientation();
   
   // Init PIDs parameters
   initPIDs();
 
   // init RC variables  //                                                                   TODO - Test if still needed
-  initRC();
+  //initRC();
 
   // Init RC-Input
-  initRCPins();         //                                                                   TODO - Test if still needed
+ // initRCPins();         //                                                                   TODO - Test if still needed
 
   LEDPIN_OFF
   CH2_OFF
@@ -253,18 +256,18 @@ void loop()
    
     motorUpdate = false;
 
-    CH2_ON
+   // CH2_ON
     
     // loop period
     //     2.053/2.035 ms max/min, error = +5/-13 us (w/o rc)
     //     2.098/2.003 ms max/min, error = +50/-45 us (1 x PPM16 1 x PWM)
     
     // update IMU data            
-    readGyros();   // td = 330us
+//    readGyros();   // td = 330us
 
-    if (config.enableGyro) updateGyroAttitude(); // td = 176 us
-    if (config.enableACC) updateACCAttitude(); // td = 21 us
-    getAttiduteAngles(); // td = 372 us
+  //  if (config.enableGyro) updateGyroAttitude(); // td = 176 us
+  //  if (config.enableACC) updateACCAttitude(); // td = 21 us
+   // getAttiduteAngles(); // td = 372 us
    
     //****************************
     // pitch PID
@@ -295,21 +298,6 @@ void loop()
       MoveMotorPosSpeed(config.motorNumberRoll, rollMotorDrive, maxPWMmotorRollScaled);
     }
 
-    // Evaluate RC-Signals, td = 120 us
-    if (fpvModePitch==true) {
-      pitchAngleSet = utilLP3_float(qLPPitch, PitchPhiSet, rcLPFPitchFpv_tc);
-    } else if(config.rcAbsolutePitch==1) {
-      pitchAngleSet = utilLP3_float(qLPPitch, PitchPhiSet, rcLPFPitch_tc); // 63us
-    } else {
-      pitchAngleSet = utilLP3_float(qLPPitch, PitchPhiSet, LOWPASS_K_FLOAT(0.03));
-    }
-    if (fpvModeRoll==true) {
-      rollAngleSet = utilLP3_float(qLPRoll, RollPhiSet, rcLPFRollFpv_tc);
-    } else if(config.rcAbsoluteRoll==1) {
-      rollAngleSet = utilLP3_float(qLPRoll, RollPhiSet, rcLPFRoll_tc);
-    } else {
-      rollAngleSet = utilLP3_float(qLPRoll, RollPhiSet, LOWPASS_K_FLOAT(0.03));
-    }
     
     // tElapsed = 1.250 ms
 
@@ -318,10 +306,10 @@ void loop()
     //****************************
     switch (count) {
     case 1:
-      readACCs(); // td = 330us
+      //readACCs(); // td = 330us
       break;
     case 2:
-      updateACC(); // td = 120us
+     // updateACC(); // td = 120us
       break;
     case 3:
       // td = 210us, total
@@ -361,23 +349,23 @@ void loop()
       switch (gimState) {
         case GIM_IDLE : // allow settling IMU
           enableMotorUpdates = false;
-          setACCtc(0.2);
-          disableAccGtest = true;
+          //setACCtc(0.2);
+          //disableAccGtest = true;
           break;
         case GIM_UNLOCKED : // fast settling of desired position
           enableMotorUpdates = true;
-          disableAccGtest = true;
-          setACCtc(2.0);
-          disableAccGtest = true;
+          //disableAccGtest = true;
+          //setACCtc(2.0);
+          //disableAccGtest = true;
           break;
         case GIM_LOCKED : // normal operation
           enableMotorUpdates = true;
-          disableAccGtest = false;
-          if (altModeAccTime) { // alternate time constant mode switch
-            setACCtc(config.accTimeConstant2);
-          } else {
-            setACCtc(config.accTimeConstant);
-          }
+          //disableAccGtest = false;
+          //if (altModeAccTime) { // alternate time constant mode switch
+          //  setACCtc(config.accTimeConstant2);
+         // } else {
+           // setACCtc(config.accTimeConstant);
+         // }
           break;
         case GIM_ERROR :
           // error state
@@ -391,47 +379,47 @@ void loop()
       decodeModeSwitches();  // td = 4 us
       
       // handle manual control panel
-      handleControlPanel();
+     // handleControlPanel();
       
       break;
     case 5:
       // RC Pitch function
-      evaluateRCPitch();
+      //evaluateRCPitch();
       // td = 26 us
-      getSetpoint(&PitchPhiSet, RC_DATA_PITCH, RC_DATA_FPV_PITCH, fpvModePitch, config.rcAbsolutePitch, config.maxRCPitch, config.minRCPitch);
+     // getSetpoint(&PitchPhiSet, RC_DATA_PITCH, RC_DATA_FPV_PITCH, fpvModePitch, config.rcAbsolutePitch, config.maxRCPitch, config.minRCPitch);
       break;
     case 6:
       // RC roll function
-      evaluateRCRoll();
+      //evaluateRCRoll();
       // td = 26us
-      getSetpoint(&RollPhiSet, RC_DATA_ROLL, RC_DATA_FPV_ROLL, fpvModeRoll, config.rcAbsoluteRoll, config.maxRCRoll, config.minRCRoll);
+      //getSetpoint(&RollPhiSet, RC_DATA_ROLL, RC_DATA_FPV_ROLL, fpvModeRoll, config.rcAbsoluteRoll, config.maxRCRoll, config.minRCRoll);
       break;
     case 7:
       // evaluate RC-Signals. td = 90 us
-      evaluateRCAux();
+      //evaluateRCAux();
       
       // check RC channel timeouts
-      checkRcTimeouts();  // td = 15 us
+     // checkRcTimeouts();  // td = 15 us
 
       break;
     case 8:
       // read RC Anlog inputs
-      readRCAnalog(); // td = 354 us (if all 3 enabled, 118 us each analog channel)
+      //readRCAnalog(); // td = 354 us (if all 3 enabled, 118 us each analog channel)
       break;
     case 9:
       //   regular i2c test
-      mpu.testConnection();
+      //mpu.testConnection();
       break;
     case 10:    
       // regular ACC output
-      pOutCnt++;
-      if (pOutCnt == (LOOPUPDATE_FREQ/10/POUT_FREQ))
-      {
-        if (config.fTrace != TRC_OFF) {
-          printTrace(config.fTrace);
-        }
-        pOutCnt = 0;
-      }
+      //pOutCnt++;
+      //if (pOutCnt == (LOOPUPDATE_FREQ/10/POUT_FREQ))
+      //{
+       // if (config.fTrace != TRC_OFF) {
+        //  printTrace(config.fTrace);
+       // }
+       // pOutCnt = 0;
+      //}
       
       // print regular trace output
       tOutCnt++;
