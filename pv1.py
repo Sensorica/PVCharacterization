@@ -21,7 +21,7 @@ class Buglump:
         screen = Gdk.Screen.get_default()
         styleContext = gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
-        self.gladefile = "pv.glade"
+        self.gladefile = "pv1.glade"
         self.builder = gtk.Builder()
         self.builder.add_from_file(self.gladefile)
         self.builder.connect_signals(self)

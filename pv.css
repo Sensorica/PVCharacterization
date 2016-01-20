@@ -1,0 +1,28 @@
+
+#window1, #menu1, #menu2, #menu3, #menu4, #menu5, #menu6, #menu7, #menu8, #menu9, #menu10, #bar1 {
+    background-color: #B6E1E7;
+}
+
+#about {
+    background-color: white;
+}
+
+#menu {
+    font-size: 14px;
+}
+
+#ylabel, #xlabel{
+    font-size: 18px;
+    color: white;
+}
+
+#button1, #button2 {
+    font-size: 24px;
+    color: gray;
+}
+
+#entry1, #entry2 {
+    font-size: 36px;
+    color: gray;
+}
+
