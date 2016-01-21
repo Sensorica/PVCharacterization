@@ -215,7 +215,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="row_spacing">28</property>
                 <property name="column_spacing">177</property>
                 <child>
-                  <object class="GtkButton" id="button1">
+                  <object class="GtkButton" id="goto_button">
                     <property name="label" translatable="yes">GO TO</property>
                     <property name="name">button1</property>
                     <property name="visible">True</property>
@@ -229,7 +229,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button2">
+                  <object class="GtkButton" id="move_button">
                     <property name="label" translatable="yes">MOVE</property>
                     <property name="name">button2</property>
                     <property name="visible">True</property>
@@ -320,9 +320,6 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="top_attach">0</property>
               </packing>
             </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -353,13 +350,14 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="row_spacing">28</property>
                 <property name="column_spacing">177</property>
                 <child>
-                  <object class="GtkButton" id="button3">
+                  <object class="GtkButton" id="script_button">
                     <property name="label" translatable="yes">SCRIPT</property>
                     <property name="name">button1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <signal name="clicked" handler="on_script_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -367,13 +365,14 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button4">
+                  <object class="GtkButton" id="run_button">
                     <property name="label" translatable="yes">RUN</property>
                     <property name="name">button2</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <signal name="clicked" handler="on_run_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -429,15 +428,6 @@ P</property>
                 <property name="left_attach">3</property>
                 <property name="top_attach">0</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>
