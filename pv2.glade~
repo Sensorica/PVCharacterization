@@ -24,6 +24,39 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
   <!-- interface-css-provider-path pv.css -->
   <!-- interface-license-type gplv3 -->
   <!-- interface-name PV Characterization -->
+  <object class="GtkMessageDialog" id="messagedialog1">
+    <property name="name">warning</property>
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="deletable">False</property>
+    <property name="gravity">center</property>
+    <property name="message_type">error</property>
+    <property name="buttons">ok</property>
+    <property name="text" translatable="yes">Please enter proper values</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="messagedialog-vbox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="messagedialog-action_area">
+            <property name="name">warningOk</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">center</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkWindow" id="window1">
     <property name="name">window1</property>
     <property name="can_focus">False</property>
@@ -222,6 +255,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <signal name="clicked" handler="on_goto_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -236,6 +270,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
+                    <signal name="clicked" handler="on_move_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -249,7 +284,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry1">
+              <object class="GtkEntry" id="x_entry">
                 <property name="name">entry1</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -262,7 +297,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry2">
+              <object class="GtkEntry" id="y_entry">
                 <property name="name">entry2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
