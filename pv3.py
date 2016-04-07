@@ -209,23 +209,36 @@ class PV:
     def on_scan_button_clicked(self, button, data=None):
         self.scan_entry = self.builder.get_object("scan_entry")
         self.scan = (self.scan_entry.get_text())
-        string = (self.scan)
-        
-        yMove = (self.y)
-        yMove = float(yMove)
-        xMove = xMove*100
-        yMove = yMove*100
-        xMove = int(xMove)
-        yMove = int(yMove)
+        string = self.scan
+        string = string.split(",")
+
+        xStart = float(string[0])
+        xStart = xStart*100
+        xStart = int(xStart)
+
+        xGoTo = float(string[1])
+        xGoTo = xGoTo*100
+        xGoTo = int(xGoTo)
+
+        yStart = float(string[2])
+        yStart = yStart*100
+        yStart = int(yStart)
+
+        yGoTo = float(string[3])
+        yGoTo = yGoTo*100
+        yGoTo = int(yGoTo)
+
+        delay = int(string[4])
+
+        steps = int(string[5])
+
         current_x = 0
         current_y = 0
+
         xStart = self.serial_read_x(current_x)
         yStart = self.serial_read_y(current_y)
-        xGoTo = xStart + xMove
-        yGoTo = yStart + yMove
-        print(xGoTo)
-        print(yGoTo)
-        if xGoTo > 8000 or xGoTo < -8000 or yGoTo > 8000 or yGoTo < -8000:
+
+        if xGoTo > 8000 or xGoTo < -8000 or yGoTo > 8000 or yGoTo < -8000 or xStart > 8000 or xStart < -8000 or yStart > 8000 or yStart < -8000:
             self.statusbar_error("Exceeding range")
         else:
             if xGoTo == xStart and yGoTo == yStart:
@@ -233,7 +246,49 @@ class PV:
                 while gtk.events_pending():
                     gtk.main_iteration()
             else:
-                if xStart > xGoTo:
+                if current_x > xStart:
+                    for x in range(current_x, xStart-10, -10):
+                        self.statusbar_update(x, current_y)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif current_x < xStart:
+                    for x in range(current_x, xStart+10, 10):
+                        self.statusbar_update(x, current_y)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(current_x, current_y)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+                    x = current_x
+
+                if current_y > yStart:
+                    for y in range(current_y, yStart-10, -10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif current_x < yStart:
+                    for y in range(current_y, yStart+10, 10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(x, current_y)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+
+
+                """if xStart > xGoTo:
                     for x in range(xStart, xGoTo-10, -10):
                         self.statusbar_update(x, yStart)
                         self.serial_push_x(x)
@@ -278,7 +333,7 @@ class PV:
 
         self.x_entry = self.builder.get_object("x_move")
         self.y_entry = self.builder.get_object("y_move")
-
+"""
     def on_stop_button_clicked(self, button, data=None):
         self.x_entry = self.builder.get_object("x_move")
         self.y_entry = self.builder.get_object("y_move")
