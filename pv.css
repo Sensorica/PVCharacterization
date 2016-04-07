@@ -11,18 +11,18 @@
     font-size: 14px;
 }
 
-#ylabel, #xlabel{
+#ylabel, #xlabel, #scan_label {
     font-size: 18px;
-    color: white;
+    color: gray;
 }
 
 #button1, #button2 {
     font-size: 24px;
-    color: gray;
+    color: black;
 }
 
 #entry1, #entry2 {
-    font-size: 36px;
+    font-size: 24px;
     color: gray;
 }
 
@@ -30,3 +30,6 @@
     font-size: 16px;
 }
 
+#statusbar {
+    font-size: 16px;
+}

@@ -290,6 +290,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">True</property>
                 <property name="has_frame">False</property>
                 <property name="xalign">0.5</property>
+                <property name="input_purpose">number</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -303,6 +304,7 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">True</property>
                 <property name="has_frame">False</property>
                 <property name="xalign">0.5</property>
+                <property name="input_purpose">number</property>
               </object>
               <packing>
                 <property name="left_attach">5</property>
@@ -330,9 +332,6 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">      X-Axis   
        Pitch</property>
-                <attributes>
-                  <attribute name="foreground" value="#2e2e34343636"/>
-                </attributes>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -346,9 +345,6 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">     Y-Axis   
        Roll</property>
-                <attributes>
-                  <attribute name="foreground" value="#2e2e34343636"/>
-                </attributes>
               </object>
               <packing>
                 <property name="left_attach">4</property>
@@ -385,14 +381,14 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="row_spacing">28</property>
                 <property name="column_spacing">177</property>
                 <child>
-                  <object class="GtkButton" id="script_button">
-                    <property name="label" translatable="yes">SCRIPT</property>
+                  <object class="GtkButton" id="scan_button">
+                    <property name="label" translatable="yes">SCAN</property>
                     <property name="name">button1</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
-                    <signal name="clicked" handler="on_script_button_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_scan_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -400,14 +396,14 @@ along with PV Characterization.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="run_button">
-                    <property name="label" translatable="yes">RUN</property>
+                  <object class="GtkButton" id="stop_button">
+                    <property name="label" translatable="yes">STOP</property>
                     <property name="name">button2</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="relief">none</property>
-                    <signal name="clicked" handler="on_run_button_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_stop_button_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -456,13 +452,35 @@ P</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="has_frame">False</property>
-                <property name="max_width_chars">18</property>
+                <property name="max_width_chars">27</property>
                 <property name="xalign">0.5</property>
+                <property name="input_purpose">number</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">0</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label6">
+                <property name="name">scan_label</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">From X, To X, From Y, To Y, Delay</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -474,6 +492,7 @@ P</property>
         </child>
         <child>
           <object class="GtkStatusbar" id="statusbar1">
+            <property name="name">statusbar</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">10</property>

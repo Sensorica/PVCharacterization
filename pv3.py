@@ -3,11 +3,57 @@
 from gi.repository import Gtk as gtk, Gdk as gdk
 import time
 import serial
+ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
 
 class PV:
 
+    def statusbar_error(self, message):
+        self.status_count += 1
+        self.statusbar.push(self.context_id, "Error: {0}".format(message))
+        time.sleep(1)
+
+    def serial_read_x(self, current_x):
+        string = ("par angleOffsetPitch")
+        ser.write(bytearray(string, 'ascii'))
+        time.sleep(1)
+        ser.flushInput()
+        time.sleep(0.1)
+        incoming = ser.readline().decode('utf-8')
+        incoming = incoming.strip()
+        incoming = incoming.split(" ")
+        current_x = incoming[1]
+        current_x = int(current_x)
+        return current_x
+
+    def serial_read_y(self, current_y):
+        string = ("par angleOffsetRoll")
+        ser.write(bytearray(string, 'ascii'))
+        time.sleep(1)
+        ser.flushInput()
+        time.sleep(0.1)
+        incoming = ser.readline().decode('utf-8')
+        incoming = incoming.strip()
+        incoming = incoming.split(" ")
+        current_y = incoming[1]
+        current_y = int(current_y)
+        return current_y
+
+    def serial_push_x(self, x):
+        string = ("par angleOffsetPitch {0}".format(x))
+        ser.write(bytearray(string, 'ascii'))
+        print("par angleOffsetPitch {0}".format(x))
+
+    def serial_push_y(self, y):
+        string = ("par angleOffsetRoll {0}".format(y))
+        ser.write(bytearray(string, 'ascii'))
+        print("par angleOffsetRoll {0}".format(y))
+
+    def statusbar_update(self, x, y):
+        self.status_count += 1
+        self.statusbar.push(self.context_id, "Pitch(X): {0}  Roll(Y): {1}".format(x,y))
+
     def close_connection(self):
-        serial.Serial.close()
+        ser.close()
 
     def on_window1_destroy(self, object, data=None):
         print ("quit with cancel")
@@ -35,21 +81,205 @@ class PV:
         yGoTo = yGoTo*100
         xGoTo = int(xGoTo)
         yGoTo = int(yGoTo)
-        for x in range(0, xGoTo, 10):
-            print("par angleOffsetPitch %d" % x)
-            time.sleep(0.5) 
- #  print("par angleOffsetRoll %d" % yGoTo)
-        self.response =  self.warning.run()
-        self.warning.hide()
+        current_x = 0
+        current_y = 0
+        xStart = self.serial_read_x(current_x)
+        print(xStart)
+        yStart = self.serial_read_y(current_y)
+        print(yStart)
+        if xGoTo > 8000 or xGoTo < -8000 or yGoTo > 8000 or yGoTo < -8000:
+            self.statusbar_error("Not in range")
+        else:
+            if xStart == xGoTo and yStart == yGoTo:
+                self.statusbar_error("Already there!")
+                while gtk.events_pending():
+                    gtk.main_iteration()
+            else:
+                if xStart > xGoTo:
+                    for x in range(xStart, xGoTo-10, -10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif xStart < xGoTo:
+                    for x in range(xStart, xGoTo+10, 10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(xStart, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+                    x = xStart
+
+                if yStart > yGoTo:
+                    for y in range(yStart, yGoTo-10, -10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif yStart < yGoTo:
+                    for y in range(yStart, yGoTo+10, 10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(x, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+
     def on_move_button_clicked(self, button, data=None):
+        self.x_entry = self.builder.get_object("x_entry")
+        self.x = (self.x_entry.get_text())
+        xMove = (self.x)
+        xMove = float(xMove)
+        self.y_entry = self.builder.get_object("y_entry")
+        self.y = (self.y_entry.get_text())
+        yMove = (self.y)
+        yMove = float(yMove)
+        xMove = xMove*100
+        yMove = yMove*100
+        xMove = int(xMove)
+        yMove = int(yMove)
+        current_x = 0
+        current_y = 0
+        xStart = self.serial_read_x(current_x)
+        yStart = self.serial_read_y(current_y)
+        xGoTo = xStart + xMove
+        yGoTo = yStart + yMove
+        print(xGoTo)
+        print(yGoTo)
+        if xGoTo > 8000 or xGoTo < -8000 or yGoTo > 8000 or yGoTo < -8000:
+            self.statusbar_error("Exceeding range")
+        else:
+            if xGoTo == xStart and yGoTo == yStart:
+                self.statusbar_error("Already there!")
+                while gtk.events_pending():
+                    gtk.main_iteration()
+            else:
+                if xStart > xGoTo:
+                    for x in range(xStart, xGoTo-10, -10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif xStart < xGoTo:
+                    for x in range(xStart, xGoTo+10, 10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(xStart, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+                    x = xStart
+
+                if yStart > yGoTo:
+                    for y in range(yStart, yGoTo-10, -10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif yStart < yGoTo:
+                    for y in range(yStart, yGoTo+10, 10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(x, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+
+    def on_scan_button_clicked(self, button, data=None):
+        self.scan_entry = self.builder.get_object("scan_entry")
+        self.scan = (self.scan_entry.get_text())
+        string = (self.scan)
+        
+        yMove = (self.y)
+        yMove = float(yMove)
+        xMove = xMove*100
+        yMove = yMove*100
+        xMove = int(xMove)
+        yMove = int(yMove)
+        current_x = 0
+        current_y = 0
+        xStart = self.serial_read_x(current_x)
+        yStart = self.serial_read_y(current_y)
+        xGoTo = xStart + xMove
+        yGoTo = yStart + yMove
+        print(xGoTo)
+        print(yGoTo)
+        if xGoTo > 8000 or xGoTo < -8000 or yGoTo > 8000 or yGoTo < -8000:
+            self.statusbar_error("Exceeding range")
+        else:
+            if xGoTo == xStart and yGoTo == yStart:
+                self.statusbar_error("Already there!")
+                while gtk.events_pending():
+                    gtk.main_iteration()
+            else:
+                if xStart > xGoTo:
+                    for x in range(xStart, xGoTo-10, -10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif xStart < xGoTo:
+                    for x in range(xStart, xGoTo+10, 10):
+                        self.statusbar_update(x, yStart)
+                        self.serial_push_x(x)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(xStart, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+                    x = xStart
+
+                if yStart > yGoTo:
+                    for y in range(yStart, yGoTo-10, -10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                elif yStart < yGoTo:
+                    for y in range(yStart, yGoTo+10, 10):
+                        self.statusbar_update(x, y)
+                        self.serial_push_y(y)
+                        time.sleep(0.1)
+                        while gtk.events_pending():
+                            gtk.main_iteration()
+                else:
+                    self.statusbar_update(x, yStart)
+                    time.sleep(0.1)
+                    while gtk.events_pending():
+                        gtk.main_iteration()
+
+
+
         self.x_entry = self.builder.get_object("x_move")
         self.y_entry = self.builder.get_object("y_move")
 
-    def on_script_button_clicked(self, button, data=None):
-        self.x_entry = self.builder.get_object("x_move")
-        self.y_entry = self.builder.get_object("y_move")
-
-    def on_run_button_clicked(self, button, data=None):
+    def on_stop_button_clicked(self, button, data=None):
         self.x_entry = self.builder.get_object("x_move")
         self.y_entry = self.builder.get_object("y_move")
 
@@ -66,12 +296,17 @@ class PV:
         self.window = self.builder.get_object("window1")
         self.aboutdialog = self.builder.get_object("aboutdialog1")
         self.warning = self.builder.get_object("messagedialog1")
+        self.statusbar = self.builder.get_object("statusbar1")
+        self.context_id = self.statusbar.get_context_id("status")
+        self.status_count = 0
         self.window.show()
-#        serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
+        #ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        #serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
 
 if __name__ == "__main__":
     main = PV()
     gtk.main()
+
 
 
