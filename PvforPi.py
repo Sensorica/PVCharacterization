@@ -3,7 +3,7 @@
 from gi.repository import Gtk as gtk, Gdk as gdk
 import time
 import serial
-ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
 class PV:
 
